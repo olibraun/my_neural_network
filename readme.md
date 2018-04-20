@@ -1,3 +1,6 @@
-# My neural network
+# My neural network library
 
-![](https://circleci.com/gh/olibraun/my_neural_network.png?circle-token=:circle-token)
+[![Build Status](https://circleci.com/gh/olibraun/my_neural_network.png?&style=shield&circle-token=:circle-token)](https://circleci.com/gh/olibraun/my_neural_network)
+
+## Creating a library file
+Run the included bash script make.sh in order to create a file containing the entire library.
