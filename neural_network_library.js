@@ -243,7 +243,6 @@ class NeuralNetwork {
       current.map(sigmoid);
       hidden_outputs.push(current);
     }
-    console.log(hidden_outputs);
     //Save the "real output" as "guess"
     let guess = hidden_outputs[hidden_outputs.length - 1];
 
@@ -275,9 +274,8 @@ class NeuralNetwork {
       let E = errors[i];
       let O = hidden_outputs[i+1];
       let H = hidden_outputs[i];
-      let I = Matrix.allOneVector(O.nrows);
-      let OO = Matrix.multiplyElementwise(O, Matrix.subtract(I, O));
-      let leftSide = Matrix.multiplyElementwise(E, OO);
+      O.map(y => y*(1-y));
+      let leftSide = Matrix.multiplyElementwise(E, O);
       leftSide.multiplyByScalar(this.learningRate);
       let rightSide = Matrix.transpose(H);
 
@@ -286,7 +284,7 @@ class NeuralNetwork {
       this.weights[i] = Matrix.add(this.weights[i], dW);
 
       // Adjust biases (they are simply adjusted by the gradients / "left side")
-      this.biases[i] = Matrix.add(this.biases[i], leftSide);
+      //this.biases[i] = Matrix.add(this.biases[i], leftSide);
     }
   }
 }
