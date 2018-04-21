@@ -272,6 +272,15 @@ test('test randomize method', () => {
   expect(A).not.toEqual(B);
 });
 
+test('test all-one-vector', () => {
+  let I = Matrix.allOneVector(3);
+  expect(I).toEqual({
+    nrows: 3,
+    ncols: 1,
+    data: [[1], [1], [1]]
+  });
+});
+
 // Unit tests for NeuralNetwork class
 
 // Dummy test to check the test framework

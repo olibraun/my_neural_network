@@ -150,6 +150,14 @@ class Matrix {
       }
     }
   }
+
+  static allOneVector(l) {
+    let I = new Matrix(l, 1);
+    for (let i = 0; i < I.nrows; i++) {
+      I.data[i][0] = 1;
+    }
+    return I;
+  }
 }
 
 class NeuralNetwork {
@@ -159,6 +167,8 @@ class NeuralNetwork {
     this.input_nodes = input_nodes;
     this.hidden_nodes = hidden_nodes;
     this.output_nodes = output_nodes;
+
+    this.learningRate = 0.1;
 
     // Store the weight matrices in the following array, ordered from input to output
     this.weights = [];
@@ -217,10 +227,25 @@ class NeuralNetwork {
   }
 
   train(inputs, targets) {
-    // Backpropagation algorithm
-    let guess = this.feedForward(inputs);
-    guess = Matrix.fromArray(guess);
+    // This uses a backpropagation algorithm
+    // Preparations
+    
+    // 1) Turn the targest into a matrix
     targets = Matrix.fromArray(targets);
+
+    // 2) Save all the "hidden outputs"
+    // Notice that the input and "real output" are also saved in this list as the first and last element, respectively
+    let current = Matrix.fromArray(inputs);
+    let hidden_outputs = [current];
+    for(let i = 0; i < this.weights.length; i++) {
+      current = Matrix.multiply(this.weights[i], current);
+      current = Matrix.add(current, this.biases[i]);
+      current.map(sigmoid);
+      hidden_outputs.push(current);
+    }
+    console.log(hidden_outputs);
+    //Save the "real output" as "guess"
+    let guess = hidden_outputs[hidden_outputs.length - 1];
 
     // First, compute all the errors
     let errors = [];
@@ -230,7 +255,34 @@ class NeuralNetwork {
       currenterror = Matrix.multiply(Matrix.transpose(this.weights[i]), currenterror);
       errors.push(currenterror);
     }
-    console.log(errors);
+
+    // The errors are ordered from output to input, so let's just reverse them
+    errors.reverse();
+    
+    // Now: gradient descent
+    // The formula is the follwing
+    /* **************************************************************
+    dW = lr * E ° (O ° ([1]-O)) * H^T
+    dW indicates the change in the weight matrix
+    lr is the learning rate
+    E is the error
+    O is the output
+    H is the input
+    ° is used to denote elementwise matrix multiplication
+    [1] is used to denote the all-one-vector
+    We use O°(1-O) since the derivative of the sigmoid s is s' = s*(1-s).*/
+    for(let i = 0; i < this.weights.length; i++) {
+      let E = errors[i];
+      let O = hidden_outputs[i+1];
+      let H = hidden_outputs[i];
+      let I = Matrix.allOneVector(O.nrows);
+      let OO = Matrix.multiplyElementwise(O, Matrix.subtract(I, O));
+      let leftSide = Matrix.multiplyElementwise(E, OO);
+      leftSide.multiplyByScalar(this.learningRate);
+      let rightSide = Matrix.transpose(H);
+      let dW = Matrix.multiply(leftSide, rightSide);
+      this.weights[i] = Matrix.add(this.weights[i], dW);
+    }
   }
 }
 
