@@ -57,6 +57,27 @@ class Matrix {
       }
     }
   }
+
+  static fromArray(input_array) {
+    const A = new Matrix(input_array.length, 1);
+    for(let i = 0; i < input_array.length; i++) {
+      A.data[i] = [input_array[i]];
+    }
+    return A;
+  }
+
+  toArray() {
+    if(this.ncols > 1) {
+      console.error('Error in Matrix to Array method, can only accept n-by-1 matrices.');
+      return;
+    } else {
+      let res = [];
+      for(let i = 0; i < this.nrows; i++) {
+       res.push(this.data[i][0]);
+      }
+      return res;
+    }
+  }
 }
 
 class NeuralNetwork {
@@ -84,13 +105,30 @@ class NeuralNetwork {
       // This is the only weight matrix
       this.weights.push(new Matrix(this.output_nodes, this.input_nodes));
     }
+
+    // Store the biases in the following array, ordered from the first hidden layer up to the output layer
+    this.biases = [];
+    for(let i = 0; i < this.hidden_nodes.length; i++) {
+      this.biases.push(new Matrix(this.hidden_nodes[i], 1));
+    }
+    this.biases.push(new Matrix(this.output_nodes, 1));
+  }
+
+  feedForward(input_array) {
+    let current = Matrix.fromArray(input_array);
+    for(let i = 0; i < this.weights.length; i++) {
+      current = Matrix.multiply(this.weights[i], current);
+      current = Matrix.add(current, this.biases[i]);
+      current.map(sigmoid);
+    }
+    return current.toArray();
   }
 }
 
 if(typeof module !== 'undefined') {
-  module.exports = NeuralNetwork;
+  module.exports = {NeuralNetwork, Matrix};
 }
 
-if(typeof module !== 'undefined') {
-  module.exports = Matrix;
+function sigmoid(x) {
+  return 1/(1 + Math.exp(-x));
 }
