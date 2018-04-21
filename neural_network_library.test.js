@@ -1,6 +1,6 @@
-// Unit tests for Matrix class
+const {Matrix, NeuralNetwork} = require('./neural_network_library.js');
 
-const Matrix = require('./neural_network_library.js');
+// Unit tests for Matrix class
 
 // Dummy test to check the test framework
 test('Begin tests for Matrix class.', () => {
@@ -13,6 +13,12 @@ test('test matrix class constructor', () => {
   expect(M.nrows).toBe(2);
   expect(M.ncols).toBe(3);
   expect(M.data[0][0]).toBe(0);
+});
+
+test('test extraction of object property', () => {
+  const A = new Matrix(3, 3);
+  const d = A.data;
+  expect(d).toBeDefined();
 });
 
 // Test matrix multiplication
@@ -158,19 +164,26 @@ test('map all entries to zero', () => {
 
 // Unit tests for NeuralNetwork class
 
-const NeuralNetwork = require('./neural_network_library.js');
-
 // Dummy test to check the test framework
 test('Begin tests for NeuralNetwork class.', () => {
   expect(1).toBe(1);
 });
 
 // Test constructor
-test('test constructor', () => {
+test('test if constructor can be run', () => {
   const nn1 = new NeuralNetwork(2, [1], 1);
   const nn2 = new NeuralNetwork(2, [1, 1], 1);
   const nn3 = new NeuralNetwork(2, [], 1);
   expect(nn1).toBeDefined();
   expect(nn2).toBeDefined();
   expect(nn3).toBeDefined();
+});
+
+test('test if weight matrices are of appropriate format', () => {
+  const nn = new NeuralNetwork(1, [2], 1);
+  const weights = nn.weights;
+  expect(nn.weights[0].nrows).toBe(2);
+  expect(weights[0].ncols).toBe(1);
+  expect(weights[1].nrows).toBe(1);
+  expect(weights[1].ncols).toBe(2);
 });

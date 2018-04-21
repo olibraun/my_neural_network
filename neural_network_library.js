@@ -84,13 +84,20 @@ class NeuralNetwork {
       // This is the only weight matrix
       this.weights.push(new Matrix(this.output_nodes, this.input_nodes));
     }
+
+    // Store the biases in the following array, ordered from the first hidden layer up to the output layer
+    this.biases = [];
+    for(let i = 0; i < this.hidden_nodes.length; i++) {
+      this.biases.push(new Matrix(this.hidden_nodes[i], 1));
+    }
+    this.biases.push(new Matrix(this.output_nodes, 1));
   }
 }
 
 if(typeof module !== 'undefined') {
-  module.exports = NeuralNetwork;
+  module.exports = {NeuralNetwork, Matrix};
 }
 
-if(typeof module !== 'undefined') {
-  module.exports = Matrix;
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
