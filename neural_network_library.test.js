@@ -71,6 +71,30 @@ test('multiply by inverse matrix', () => {
   expect(Matrix.multiply(AI, A)).toEqual(I);
 });
 
+// Test elementwise matrix multiplication
+test('only multiply matrices elementwise', () => {
+  //Replace console.error with a jest mock so we can see if it has been called
+  global.console.error = jest.fn();
+
+  let a = [1, 2];
+  expect(Matrix.multiplyElementwise(a, a)).toBeUndefined();
+
+  //Check if the mock console.error has been called 
+  expect(global.console.error).toHaveBeenCalledWith('Error in elementwise matrix multiplication, this method can only multiply matrices.');
+});
+
+test('only multiply matrices of appropriate formats', () => {
+  //Replace console.error with a jest mock so we can see if it has been called
+  global.console.error = jest.fn();
+  
+  let A = new Matrix(2, 3);
+  let B = Matrix.transpose(A);
+  expect(Matrix.multiplyElementwise(A, B)).toBeUndefined();
+
+  //Check if the mock console.error has been called 
+  expect(global.console.error).toHaveBeenCalledWith('Error in elemntwise matrix multiplication, the rows and columns of the matrices do not match.');
+});
+
 // Test matrix addition
 test('test that the add method is static', () => {
   let instance = new Matrix(1, 1);

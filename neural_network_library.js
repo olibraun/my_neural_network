@@ -32,6 +32,24 @@ class Matrix {
     return C;
   }
 
+  static multiplyElementwise(A, B) {
+    if(!(A instanceof Matrix) || !(B instanceof Matrix)) {
+      console.error('Error in elementwise matrix multiplication, this method can only multiply matrices.');
+      return;
+    }
+    if(A.ncols !== B.ncols || A.nrows !== B.nrows) {
+      console.error('Error in elemntwise matrix multiplication, the rows and columns of the matrices do not match.');
+      return;
+    }
+    let C = new Matrix(A.nrows, A.ncols);
+    for(let i = 0; i < C.nrows; i++) {
+      for(let j = 0; j < C.ncols; j++) {
+        C.data[i][j] += A.data[i][j] * B.data[i][j];
+      }
+    }
+    return C;
+  }
+
   static add(A, B) {
     if(!(A instanceof Matrix) || !(B instanceof Matrix)) {
       console.error('Error in matrix addition, this method can only add matrices.');
