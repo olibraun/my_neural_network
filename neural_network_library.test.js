@@ -3,7 +3,7 @@
 const Matrix = require('./neural_network_library.js');
 
 // Dummy test to check the test framework
-test('dummy test', () => {
+test('Begin tests for Matrix class.', () => {
   expect(1).toBe(1);
 });
 
@@ -18,18 +18,30 @@ test('test matrix class constructor', () => {
 // Test matrix multiplication
 test('test that the multiply method is static', () => {
   let instance = new Matrix(1, 1);
-  expect(instance.multiply).toBeUndefined;
-  expect(Matrix.multiply).toBeDefined;
+  expect(instance.multiply).toBeUndefined();
+  expect(Matrix.multiply).toBeDefined();
 });
 
 test('only multiply matrices', () => {
+  //Replace console.error with a jest mock so we can see if it has been called
+  global.console.error = jest.fn();
+
   let a = [1, 2];
-  expect(Matrix.multiply(a, a)).toBeUndefined;
+  expect(Matrix.multiply(a, a)).toBeUndefined();
+
+  //Check if the mock console.error has been called 
+  expect(global.console.error).toHaveBeenCalledWith('Error in matrix multiplication, this method can only multiply matrices.');
 });
 
 test('only multiply matrices of appropriate formats', () => {
+  //Replace console.error with a jest mock so we can see if it has been called
+  global.console.error = jest.fn();
+  
   let A = new Matrix(2, 3);
-  expect(Matrix.multiply(A, A)).toBeUndefined;
+  expect(Matrix.multiply(A, A)).toBeUndefined();
+
+  //Check if the mock console.error has been called 
+  expect(global.console.error).toHaveBeenCalledWith('Error in matrix multiplication, the rows and columns of the matrices do not match.');
 });
 
 test('multiply by unit matrix', () => {
@@ -56,19 +68,31 @@ test('multiply by inverse matrix', () => {
 // Test matrix addition
 test('test that the add method is static', () => {
   let instance = new Matrix(1, 1);
-  expect(instance.add).toBeUndefined;
-  expect(Matrix.add).toBeDefined;
+  expect(instance.add).toBeUndefined();
+  expect(Matrix.add).toBeDefined();
 });
 
 test('only add matrices', () => {
+  //Replace console.error with a jest mock so we can see if it has been called
+  global.console.error = jest.fn();
+
   let a = [1, 2];
   expect(Matrix.add(a, a)).toBeUndefined;
+
+  //Check if the mock console.error has been called 
+  expect(global.console.error).toHaveBeenCalledWith('Error in matrix addition, this method can only add matrices.');
 });
 
-test('only multiply matrices of appropriate formats', () => {
+test('only add matrices of appropriate formats', () => {
+  //Replace console.error with a jest mock so we can see if it has been called
+  global.console.error = jest.fn();
+
   let A = new Matrix(2, 3);
   let B = new Matrix(3, 2);
   expect(Matrix.add(A, B)).toBeUndefined;
+
+  //Check if the mock console.error has been called 
+  expect(global.console.error).toHaveBeenCalledWith('Error in matrix addition, formats of matrices do not match.');
 });
 
 test('add zero matrix', () => {
@@ -137,10 +161,16 @@ test('map all entries to zero', () => {
 const NeuralNetwork = require('./neural_network_library.js');
 
 // Dummy test to check the test framework
-test('dummy test', () => {
+test('Begin tests for NeuralNetwork class.', () => {
   expect(1).toBe(1);
 });
 
 // Test constructor
-const nn1 = new NeuralNetwork(2, [1], 1);
-const nn2 = new NeuralNetwork(2, [1, 1], 1);
+test('test constructor', () => {
+  const nn1 = new NeuralNetwork(2, [1], 1);
+  const nn2 = new NeuralNetwork(2, [1, 1], 1);
+  const nn3 = new NeuralNetwork(2, [], 1);
+  expect(nn1).toBeDefined();
+  expect(nn2).toBeDefined();
+  expect(nn3).toBeDefined();
+});
