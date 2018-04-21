@@ -161,6 +161,32 @@ test('map all entries to zero', () => {
   });
 });
 
+test('test static fromArray method', () => {
+  const a = [1, 2, 3];
+  const A = Matrix.fromArray(a);
+  expect(A).toEqual({
+    nrows: 3,
+    ncols: 1,
+    data: [[1], [2], [3]]
+  });
+});
+
+test('check input of toArray method', () => {
+  //Replace console.error with a jest mock so we can see if it has been called
+  global.console.error = jest.fn();
+
+  const A = new Matrix(3, 3);
+  A.toArray();
+
+  //Check if the mock console.error has been called 
+  expect(global.console.error).toHaveBeenCalledWith('Error in Matrix to Array method, can only accept n-by-1 matrices.');
+});
+
+test('test toArray method', () => {
+  const A = new Matrix(3, 1);
+  A.data = [[1], [2], [3]];
+  expect(A.toArray()).toEqual([1, 2, 3]);
+})
 
 // Unit tests for NeuralNetwork class
 
@@ -186,4 +212,21 @@ test('test if weight matrices are of appropriate format', () => {
   expect(weights[0].ncols).toBe(1);
   expect(weights[1].nrows).toBe(1);
   expect(weights[1].ncols).toBe(2);
+});
+
+test('test feedforward', () => {
+  let nn1 = new NeuralNetwork(4, [], 3);
+  let nn2 = new NeuralNetwork(1, [1], 1);
+  let nn3 = new NeuralNetwork(6, [5, 4, 3], 2);
+
+  //These neural networks are in the "initial state", i.e. all weights and biases 0, and the Sigmoid activation function.
+  expect(nn1.feedForward([1, 2, 3, 4])).toEqual([.5, .5, .5]);
+  expect(nn1.feedForward([5, 6, 7, 8])).toEqual([.5, .5, .5]);
+
+  expect(nn2.feedForward([1])).toEqual([.5]);
+  expect(nn2.feedForward([0])).toEqual([.5]);
+
+  expect(nn3.feedForward([1, 2, 3, 4, 5, 6])).toEqual([.5, .5]);
+  expect(nn3.feedForward([7, 8, 9, 10, 11, 12])).toEqual([.5, .5]);
+  expect(nn3.feedForward([0, 1, 0, 1, 0, 1])).toEqual([.5, .5]);
 });

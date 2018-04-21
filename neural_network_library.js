@@ -57,6 +57,27 @@ class Matrix {
       }
     }
   }
+
+  static fromArray(input_array) {
+    const A = new Matrix(input_array.length, 1);
+    for(let i = 0; i < input_array.length; i++) {
+      A.data[i] = [input_array[i]];
+    }
+    return A;
+  }
+
+  toArray() {
+    if(this.ncols > 1) {
+      console.error('Error in Matrix to Array method, can only accept n-by-1 matrices.');
+      return;
+    } else {
+      let res = [];
+      for(let i = 0; i < this.nrows; i++) {
+       res.push(this.data[i][0]);
+      }
+      return res;
+    }
+  }
 }
 
 class NeuralNetwork {
@@ -92,12 +113,22 @@ class NeuralNetwork {
     }
     this.biases.push(new Matrix(this.output_nodes, 1));
   }
+
+  feedForward(input_array) {
+    let current = Matrix.fromArray(input_array);
+    for(let i = 0; i < this.weights.length; i++) {
+      current = Matrix.multiply(this.weights[i], current);
+      current = Matrix.add(current, this.biases[i]);
+      current.map(sigmoid);
+    }
+    return current.toArray();
+  }
 }
 
 if(typeof module !== 'undefined') {
   module.exports = {NeuralNetwork, Matrix};
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+function sigmoid(x) {
+  return 1/(1 + Math.exp(-x));
 }
