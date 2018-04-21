@@ -52,3 +52,81 @@ test('multiply by inverse matrix', () => {
   expect(Matrix.multiply(A, AI)).toEqual(I);
   expect(Matrix.multiply(AI, A)).toEqual(I);
 });
+
+// Test matrix addition
+test('test that the add method is static', () => {
+  let instance = new Matrix(1, 1);
+  expect(instance.add).toBeUndefined;
+  expect(Matrix.add).toBeDefined;
+});
+
+test('only add matrices', () => {
+  let a = [1, 2];
+  expect(Matrix.add(a, a)).toBeUndefined;
+});
+
+test('only multiply matrices of appropriate formats', () => {
+  let A = new Matrix(2, 3);
+  let B = new Matrix(3, 2);
+  expect(Matrix.add(A, B)).toBeUndefined;
+});
+
+test('add zero matrix', () => {
+  let A = new Matrix(2, 2);
+  A.data = [[1, 2], [3, 4]];
+  let B = new Matrix(2, 2);
+  expect(Matrix.add(A, B)).toEqual(A);
+  expect(Matrix.add(B, A)).toEqual(A);
+  expect(Matrix.add(B, B)).toEqual(B);
+});
+
+test('add two non zero matrices', () => {
+  let A = new Matrix(2, 2);
+  let B = new Matrix(2, 2);
+  A.data = [[1, 2], [3, 4]];
+  B.data = [[5, 6], [7, 8]];
+  expect(Matrix.add(A, B)).toEqual({
+    nrows: 2,
+    ncols: 2,
+    data: [[6, 8], [10, 12]]
+  });
+  expect(Matrix.add(B, A)).toEqual({
+    nrows: 2,
+    ncols: 2,
+    data: [[6, 8], [10, 12]]
+  });
+});
+
+// Test the map method
+test('add 1 to every matrix entry', () => {
+  let A = new Matrix(2, 2);
+  let B = new Matrix(2, 2);
+  B.data = [[1, 2], [3, 4]];
+
+  A.map(x => x+1);
+  B.map(x => x+1);
+
+  expect(A).toEqual({
+    nrows: 2,
+    ncols: 2,
+    data: [[1, 1], [1, 1]]
+  });
+
+  expect(B).toEqual({
+    nrows: 2,
+    ncols: 2,
+    data: [[2, 3], [4, 5]]
+  });
+});
+
+test('map all entries to zero', () => {
+  let A = new Matrix(2, 2);
+  A.data = [[1, 2], [3, 4]];
+  A.map(x => 0);
+
+  expect(A).toEqual({
+    nrows: 2,
+    ncols: 2,
+    data: [[0, 0], [0, 0]];
+  });
+});
