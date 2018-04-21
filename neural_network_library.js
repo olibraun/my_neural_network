@@ -50,6 +50,32 @@ class Matrix {
     return C;
   }
 
+  multiplyByScalar(a) {
+    for(let i = 0; i < this.nrows; i++) {
+      for(let j = 0; j < this.ncols; j++) {
+        this.data[i][j] *= a;
+      }
+    }
+  }
+
+  static subtract(A, B) {
+    if(!(A instanceof Matrix) || !(B instanceof Matrix)) {
+      console.error('Error in matrix subtraction, this method can only subtract matrices.');
+      return;
+    }
+    if(A.ncols !== B.ncols || A.nrows !== B.nrows) {
+      console.error('Error in matrix subtraction, formats of matrices do not match.');
+      return;
+    }
+    let C = new Matrix(A.nrows, B.ncols);
+    for(let i = 0; i < A.nrows; i++) {
+      for(let j = 0; j < A.ncols; j++) {
+        C.data[i][j] = A.data[i][j] - B.data[i][j];
+      }
+    }
+    return C;
+  }
+
   map(f) {
     for(let i = 0; i < this.nrows; i++) {
       for(let j = 0; j < this.ncols; j++) {
@@ -77,6 +103,26 @@ class Matrix {
       }
       return res;
     }
+  }
+
+  copy() {
+    let A = new Matrix(this.nrows, this.ncols);
+    for(let i = 0; i < this.nrows; i++) {
+      for(let j = 0; j < this.ncols; j++) {
+        A.data[i][j] = this.data[i][j];
+      }
+    }
+    return A;
+  }
+
+  static transpose(A) {
+    let B = new Matrix(A.ncols, A.nrows);
+    for(let i = 0; i < B.nrows; i++) {
+      for(let j = 0; j < B.ncols; j++) {
+        B.data[i][j] = A.data[j][i];
+      }
+    }
+    return B;
   }
 }
 
@@ -122,6 +168,23 @@ class NeuralNetwork {
       current.map(sigmoid);
     }
     return current.toArray();
+  }
+
+  train(inputs, targets) {
+    // Backpropagation algorithm
+    let guess = this.feedForward(inputs);
+    guess = Matrix.fromArray(guess);
+    targets = Matrix.fromArray(targets);
+
+    // First, compute all the errors
+    let errors = [];
+    let currenterror = Matrix.subtract(targets, guess);
+    errors.push(currenterror);
+    for(let i = this.weights.length-1; i > 0; i--) {
+      currenterror = Matrix.multiply(Matrix.transpose(this.weights[i]), currenterror);
+      errors.push(currenterror);
+    }
+    console.log(errors);
   }
 }
 

@@ -186,7 +186,59 @@ test('test toArray method', () => {
   const A = new Matrix(3, 1);
   A.data = [[1], [2], [3]];
   expect(A.toArray()).toEqual([1, 2, 3]);
-})
+});
+
+test('test multiplyByScalar', () => {
+  const A = new Matrix(2, 3);
+  A.data = [[1, 2, 3], [4, 5, 6]];
+  A.multiplyByScalar(-1);
+  expect(A).toEqual({
+    nrows: 2,
+    ncols: 3,
+    data: [[-1, -2, -3], [-4, -5, -6]]
+  });
+});
+
+test('test copy method', () => {
+  let A = new Matrix(2, 3);
+  let B = A.copy();
+  A = undefined;
+  expect(A).toBeUndefined();
+  expect(B).toBeDefined();
+  expect(B).toEqual({
+    nrows: 2,
+    ncols: 3,
+    data: [[0, 0, 0], [0, 0, 0]]
+  });
+});
+
+test('test subtract method', () => {
+  let A = new Matrix(2, 3);
+  let B = new Matrix(2, 3);
+  A.data = [[1, 2, 3], [4, 5, 6]];
+  let C = A.copy();
+  C.multiplyByScalar(-1);
+  expect(Matrix.subtract(A, B)).toEqual(A);
+  expect(Matrix.subtract(B, A)).toEqual(C);
+  expect(Matrix.subtract(A, A)).toEqual(B);
+});
+
+test('test transpose method', () => {
+  let A = new Matrix(2, 3);
+  let B = new Matrix(1, 2);
+  A.data = [[1, 2, 3], [4, 5, 6]];
+  B.data = [[1, 1]];
+  expect(Matrix.transpose(A)).toEqual({
+    nrows: 3,
+    ncols: 2,
+    data: [[1, 4], [2, 5], [3, 6]]
+  });
+  expect(Matrix.transpose(B)).toEqual({
+    nrows: 2,
+    ncols: 1,
+    data: [[1], [1]]
+  });
+});
 
 // Unit tests for NeuralNetwork class
 
