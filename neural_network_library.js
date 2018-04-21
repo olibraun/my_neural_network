@@ -124,6 +124,14 @@ class Matrix {
     }
     return B;
   }
+
+  randomize() {
+    for(let i = 0; i < this.nrows; i++) {
+      for(let j = 0; j < this.ncols; j++) {
+        this.data[i][j] = 2*Math.random() - 1;
+      }
+    }
+  }
 }
 
 class NeuralNetwork {
@@ -158,6 +166,26 @@ class NeuralNetwork {
       this.biases.push(new Matrix(this.hidden_nodes[i], 1));
     }
     this.biases.push(new Matrix(this.output_nodes, 1));
+  }
+
+  copy() {
+    let nn = new NeuralNetwork(this.input_nodes, this.hidden_nodes, this.output_nodes);
+    for(let i = 0; i < this.weights.length; i++) {
+      nn.weights[i] = this.weights[i].copy();
+    }
+    for(let i = 0; i < this.biases.length; i++) {
+      nn.biases[i] = this.biases[i].copy();
+    }
+    return nn;
+  }
+
+  randomize() {
+    this.weights.forEach(weightMatrix => {
+      weightMatrix.randomize();
+    });
+    this.biases.forEach(biasMatrix => {
+      biasMatrix.randomize();
+    });
   }
 
   feedForward(input_array) {

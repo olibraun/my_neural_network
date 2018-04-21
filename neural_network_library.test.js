@@ -199,7 +199,7 @@ test('test multiplyByScalar', () => {
   });
 });
 
-test('test copy method', () => {
+test('test matrix copy method', () => {
   let A = new Matrix(2, 3);
   let B = A.copy();
   A = undefined;
@@ -240,6 +240,14 @@ test('test transpose method', () => {
   });
 });
 
+test('test randomize method', () => {
+  // Use a big matrix so that its randomized version is not the zero matrix by chance
+  let A = new Matrix(500, 500);
+  let B = A.copy();
+  A.randomize();
+  expect(A).not.toEqual(B);
+});
+
 // Unit tests for NeuralNetwork class
 
 // Dummy test to check the test framework
@@ -264,6 +272,22 @@ test('test if weight matrices are of appropriate format', () => {
   expect(weights[0].ncols).toBe(1);
   expect(weights[1].nrows).toBe(1);
   expect(weights[1].ncols).toBe(2);
+});
+
+test('test nn copy method', () => {
+  let A = new NeuralNetwork(5, [10, 11, 7], 6);
+  let B = A.copy();
+  A = undefined;
+  expect(A).toBeUndefined();
+  expect(B).toBeDefined();
+});
+
+test('test nn randomize method', () => {
+  // Use a sufficiently large neural network to test this.
+  let A = new NeuralNetwork(25, [20, 15, 10], 10);
+  let B = A.copy();
+  A.randomize();
+  expect(A).not.toEqual(B);
 });
 
 test('test feedforward', () => {
