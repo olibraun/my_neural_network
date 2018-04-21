@@ -75,7 +75,7 @@ class NeuralNetwork {
       // Weight matrix for the inputs
       this.weights.push(new Matrix(this.hidden_nodes[0], this.input_nodes));
       // Weight matrix for the hidden layers
-      for(let i = 1; i < this.hidden_nodes.length - 1; i++) {
+      for(let i = 0; i < this.hidden_nodes.length - 1; i++) {
         this.weights.push(new Matrix(this.hidden_nodes[i+1], this.hidden_nodes[i]));
       }
       // Weight matrix for the output layer
