@@ -71,6 +71,30 @@ test('multiply by inverse matrix', () => {
   expect(Matrix.multiply(AI, A)).toEqual(I);
 });
 
+// Test elementwise matrix multiplication
+test('only multiply matrices elementwise', () => {
+  //Replace console.error with a jest mock so we can see if it has been called
+  global.console.error = jest.fn();
+
+  let a = [1, 2];
+  expect(Matrix.multiplyElementwise(a, a)).toBeUndefined();
+
+  //Check if the mock console.error has been called 
+  expect(global.console.error).toHaveBeenCalledWith('Error in elementwise matrix multiplication, this method can only multiply matrices.');
+});
+
+test('only multiply matrices of appropriate formats', () => {
+  //Replace console.error with a jest mock so we can see if it has been called
+  global.console.error = jest.fn();
+  
+  let A = new Matrix(2, 3);
+  let B = Matrix.transpose(A);
+  expect(Matrix.multiplyElementwise(A, B)).toBeUndefined();
+
+  //Check if the mock console.error has been called 
+  expect(global.console.error).toHaveBeenCalledWith('Error in elemntwise matrix multiplication, the rows and columns of the matrices do not match.');
+});
+
 // Test matrix addition
 test('test that the add method is static', () => {
   let instance = new Matrix(1, 1);
@@ -186,7 +210,76 @@ test('test toArray method', () => {
   const A = new Matrix(3, 1);
   A.data = [[1], [2], [3]];
   expect(A.toArray()).toEqual([1, 2, 3]);
-})
+});
+
+test('test multiplyByScalar', () => {
+  const A = new Matrix(2, 3);
+  A.data = [[1, 2, 3], [4, 5, 6]];
+  A.multiplyByScalar(-1);
+  expect(A).toEqual({
+    nrows: 2,
+    ncols: 3,
+    data: [[-1, -2, -3], [-4, -5, -6]]
+  });
+});
+
+test('test matrix copy method', () => {
+  let A = new Matrix(2, 3);
+  let B = A.copy();
+  A = undefined;
+  expect(A).toBeUndefined();
+  expect(B).toBeDefined();
+  expect(B).toEqual({
+    nrows: 2,
+    ncols: 3,
+    data: [[0, 0, 0], [0, 0, 0]]
+  });
+});
+
+test('test subtract method', () => {
+  let A = new Matrix(2, 3);
+  let B = new Matrix(2, 3);
+  A.data = [[1, 2, 3], [4, 5, 6]];
+  let C = A.copy();
+  C.multiplyByScalar(-1);
+  expect(Matrix.subtract(A, B)).toEqual(A);
+  expect(Matrix.subtract(B, A)).toEqual(C);
+  expect(Matrix.subtract(A, A)).toEqual(B);
+});
+
+test('test transpose method', () => {
+  let A = new Matrix(2, 3);
+  let B = new Matrix(1, 2);
+  A.data = [[1, 2, 3], [4, 5, 6]];
+  B.data = [[1, 1]];
+  expect(Matrix.transpose(A)).toEqual({
+    nrows: 3,
+    ncols: 2,
+    data: [[1, 4], [2, 5], [3, 6]]
+  });
+  expect(Matrix.transpose(B)).toEqual({
+    nrows: 2,
+    ncols: 1,
+    data: [[1], [1]]
+  });
+});
+
+test('test randomize method', () => {
+  // Use a big matrix so that its randomized version is not the zero matrix by chance
+  let A = new Matrix(500, 500);
+  let B = A.copy();
+  A.randomize();
+  expect(A).not.toEqual(B);
+});
+
+test('test all-one-vector', () => {
+  let I = Matrix.allOneVector(3);
+  expect(I).toEqual({
+    nrows: 3,
+    ncols: 1,
+    data: [[1], [1], [1]]
+  });
+});
 
 // Unit tests for NeuralNetwork class
 
@@ -212,6 +305,22 @@ test('test if weight matrices are of appropriate format', () => {
   expect(weights[0].ncols).toBe(1);
   expect(weights[1].nrows).toBe(1);
   expect(weights[1].ncols).toBe(2);
+});
+
+test('test nn copy method', () => {
+  let A = new NeuralNetwork(5, [10, 11, 7], 6);
+  let B = A.copy();
+  A = undefined;
+  expect(A).toBeUndefined();
+  expect(B).toBeDefined();
+});
+
+test('test nn randomize method', () => {
+  // Use a sufficiently large neural network to test this.
+  let A = new NeuralNetwork(25, [20, 15, 10], 10);
+  let B = A.copy();
+  A.randomize();
+  expect(A).not.toEqual(B);
 });
 
 test('test feedforward', () => {
