@@ -280,8 +280,13 @@ class NeuralNetwork {
       let leftSide = Matrix.multiplyElementwise(E, OO);
       leftSide.multiplyByScalar(this.learningRate);
       let rightSide = Matrix.transpose(H);
+
+      // Calculate change in weights and adjust weights
       let dW = Matrix.multiply(leftSide, rightSide);
       this.weights[i] = Matrix.add(this.weights[i], dW);
+
+      // Adjust biases (they are simply adjusted by the gradients / "left side")
+      this.biases[i] = Matrix.add(this.biases[i], leftSide);
     }
   }
 }
