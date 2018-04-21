@@ -127,6 +127,6 @@ test('map all entries to zero', () => {
   expect(A).toEqual({
     nrows: 2,
     ncols: 2,
-    data: [[0, 0], [0, 0]];
+    data: [[0, 0], [0, 0]]
   });
 });
