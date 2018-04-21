@@ -1,6 +1,6 @@
 // Unit tests for Matrix class
 
-const Matrix = require('./Matrix.js');
+const Matrix = require('./neural_network_library.js');
 
 // Dummy test to check the test framework
 test('dummy test', () => {
@@ -130,3 +130,17 @@ test('map all entries to zero', () => {
     data: [[0, 0], [0, 0]]
   });
 });
+
+
+// Unit tests for NeuralNetwork class
+
+const NeuralNetwork = require('./neural_network_library.js');
+
+// Dummy test to check the test framework
+test('dummy test', () => {
+  expect(1).toBe(1);
+});
+
+// Test constructor
+const nn1 = new NeuralNetwork(2, [1], 1);
+const nn2 = new NeuralNetwork(2, [1, 1], 1);
