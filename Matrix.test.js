@@ -51,4 +51,4 @@ test('multiply by inverse matrix', () => {
   I.data = [[1, 0], [0, 1]];
   expect(Matrix.multiply(A, AI)).toEqual(I);
   expect(Matrix.multiply(AI, A)).toEqual(I);
-})
+});
